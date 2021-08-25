@@ -32,7 +32,6 @@ if __name__ == '__main__':
                 clean_text = extract_text(paragraphs[index+1])
                 if clean_text != '':
                     result[dirty_object['title']] = clean_text
-                    break
             except:
                 if len(sections) < 1:
                     paragraphs = section_regex.split(dirty_object['text'])
