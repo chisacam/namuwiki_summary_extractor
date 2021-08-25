@@ -30,13 +30,8 @@ if __name__ == '__main__':
                 index = sections.index('== 개요 ==')
                 paragraphs = section_regex.split(dirty_object['text'])
                 clean_text = extract_text(paragraphs[index+1])
-                print(dirty_object)
-                print(clean_text)
                 if clean_text != '':
-                    result.append({
-                        'title': dirty_object['title'],
-                        'text': clean_text
-                    })
+                    result[dirty_object['title']] = clean_text
                     break
             except:
                 if len(sections) < 1:
