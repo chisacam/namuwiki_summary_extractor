@@ -17,7 +17,7 @@ def get_argparser():
     return parser
 
 if __name__ == '__main__':
-    result = []
+    result = {}
     section_regex = re.compile(r'==[ 가-힣]+==')
     parser = get_argparser()
     args = parser.parse_args()
@@ -43,10 +43,7 @@ if __name__ == '__main__':
                     paragraphs = section_regex.split(dirty_object['text'])
                     clean_text = extract_text(paragraphs[0])
                     if clean_text != '':
-                        result.append({
-                            'title': dirty_object['title'],
-                            'text': clean_text
-                        })
+                        result[dirty_object['title']] = clean_text
                 continue
         print('작업끝!')
 
