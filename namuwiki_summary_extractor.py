@@ -2,7 +2,6 @@ import ijson
 from namuwiki.extractor import extract_text
 import re
 import json
-import datetime
 from argparser import get_argparser
 
 if __name__ == '__main__':
