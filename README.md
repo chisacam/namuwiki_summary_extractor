@@ -1,27 +1,56 @@
 # namuwiki_summary_extractor
-
 본 프로그램은 나무위키 덤프에서 개요에 해당하는 부분만 추출해 위키 문법 제거 및 제목-개요 쌍의 json으로 제공하는 프로그램 입니다.
-파이썬 3.9.6 으로 작성 및 테스트 하였으며, 문법 제거 프로그램은 [namu-wiki-extractor](https://github.com/jonghwanhyeon/namu-wiki-extractor)를 사용 하였습니다.
 
+문법 제거 프로그램은 [namu-wiki-extractor](https://github.com/jonghwanhyeon/namu-wiki-extractor)를 사용 하였습니다.
+
+- 작성된 파이썬 버전: 3.9.6
+- 권장 파이썬 버전: 3.8+
+
+
+*****
 # 사용법
+## 1. 프로젝트 clone
+프로젝트를 clone 받습니다.
 
-1. requirements 설치
+```sh
+git clone https://github.com/chisacam/namuwiki_summary_extractor.git
+cd namuwiki_summary_extractor
+```
 
-    ```
-    pip install -r requirements.txt
-    ```
-
-2. 실행!
-
-    ```
-    python namuwiki_summary_extracter.py [--dump_path "namuwiki_dump_path"] [--output_file "output_file_path"]
-    ```
-
-    경로는 따로 명시하지 않는다면 동일 폴더 안의 input.json 파일 읽기를 시도하고, result_{오늘 년월일}.json 으로 내보냅니다.
-
-    참 쉽죠?
+## 2. requirements 설치
+먼저 필요한 라이브러리를 pip으로 설치합니다.
 
 
+```sh
+pip install -r requirements.txt
+```
+
+설치가 끝났다면, 아래 두가지 방법으로 활용이 가능합니다.    
+
+## 3.1. 명령줄로 사용
+
+```sh
+python namuwiki_summary_extracter.py [--dump_path "namuwiki_dump_path"] [--output_file "output_file_path"] [--max_extract 100]
+```
+
+경로는 따로 명시하지 않는다면 동일 폴더 안의 input.json 파일 읽기를 시도하고, result_YYYYMMdd.json 으로 내보냅니다.
+
+--max_extract 옵션은 지정한 정수만큼만 추출을 시행합니다. 기본값은 0입니다.(입력된 json 전체 추출시도)
+
+참 쉽죠?    
+
+## 3.2. 다른 코드에서 함수로 사용
+
+다른 파이썬 코드에 import 해서 쓸 수도 있습니다.
+
+```python
+from namuwiki_summary_extarctor import extract_summary
+
+summary = extract_summary(dump_path, max_extract) # dump_path: string, max_extract: int
+```
+
+summary에 저장되는 값은 명령줄로 실행했을때 json으로 저장되는 값과 같습니다.    
+*****
 # 입출력 예시
 
 입력과 출력의 예시는 다음과 같습니다.
