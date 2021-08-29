@@ -3,7 +3,7 @@
 
 문법 제거 프로그램은 [namu-wiki-extractor](https://github.com/jonghwanhyeon/namu-wiki-extractor)를 사용 하였습니다.
 
-- 작성된 파이썬 버전: 3.9.6
+- 작성 및 테스트한 파이썬 버전: 3.9.6
 - 권장 파이썬 버전: 3.8+
 
 
@@ -30,12 +30,12 @@ pip install -r requirements.txt
 ## 3.1. 명령줄로 사용
 
 ```sh
-python namuwiki_summary_extracter.py [--dump_path "namuwiki_dump_path"] [--output_file "output_file_path"] [--max_extract 100]
+python namuwiki_summary_extracter.py [--dump_path "namuwiki_dump_path"] [--output_file "output_file_path"] [--limit 100]
 ```
 
 경로는 따로 명시하지 않는다면 동일 폴더 안의 input.json 파일 읽기를 시도하고, result_YYYYMMdd.json 으로 내보냅니다.
 
---max_extract 옵션은 지정한 정수만큼만 추출을 시행합니다. 기본값은 0입니다.(입력된 json 전체 추출시도)
+--limit 옵션은 지정한 정수만큼만 추출을 시행합니다. 기본값은 0이고(입력된 json 전체 추출시도), 반드시 0 또는 양수여야 합니다.
 
 참 쉽죠?    
 
@@ -46,10 +46,13 @@ python namuwiki_summary_extracter.py [--dump_path "namuwiki_dump_path"] [--outpu
 ```python
 from namuwiki_summary_extarctor import extract_summary
 
-summary = extract_summary(dump_path, max_extract) # dump_path: string, max_extract: int
+summary, count = extract_summary(dump_path, limit) # dump_path: string, limit: int(must be positive or zero)
+print(summary, count)
 ```
 
-summary에 저장되는 값은 명령줄로 실행했을때 json으로 저장되는 값과 같습니다.    
+summary에 저장되는 값은 명령줄로 실행했을때 json으로 저장되는 값과 같으며, 아래 입출력 예시와 example.json 에서 확인하실 수 있습니다.
+
+count는 개요를 추출한 문서의 갯수입니다. 각 문서는 최소한 1글자 이상의 개요 텍스트가 들어있습니다.
 *****
 # 입출력 예시
 
@@ -86,3 +89,8 @@ summary에 저장되는 값은 명령줄로 실행했을때 json으로 저장되
     ...
 ]
 ```
+
+# issue
+
+처리 후 VSCode에서 결과물 json 파일을 열었을때, 비 정상적인 줄바꿈 문자를 발견했다는 메세지가 뜹니다.
+자동 제거를 수락하면 이후 사용에 문제가 없긴 하나(sqlite_import.py 기준), 어디에서 문제가 발생하는지는 확인이 필요합니다.

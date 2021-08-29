@@ -4,37 +4,50 @@ import re
 import json
 from argparser import get_argparser
 
-def extract_summary(dump_path, max_extract = 0):
-    result = []
-    section_regex = re.compile(r'^=+[^=]+=+$',re.MULTILINE)
-    summary_regex = re.compile(r'=+[ 개요]+=+')
+section_regex = re.compile(r'^=+[^=]+=+$',re.MULTILINE)
+summary_regex = re.compile(r'=+[ 개요]+=+')
+
+def clean_object(dirty_object):
+    sections = section_regex.findall(dirty_object['text'])
+    summary_index = [i for i, s in enumerate(sections) if summary_regex.search(s)]
+    paragraphs = section_regex.split(dirty_object['text'])
+    cleaned_summary = extract_text(paragraphs[0 if len(summary_index) == 0 else summary_index[0]+1])
+    return cleaned_summary
+
+def extract_summary(dump_path = './input.json', limit = 0):
     with open(dump_path, 'r') as namu_dirty:
-        count = 0
+        result = []
         json_parser = ijson.items(namu_dirty, 'item')
-        for dirty_object in json_parser:
-            sections = section_regex.findall(dirty_object['text'])
-            #print(sections)
-            index = [i for i, s in enumerate(sections) if summary_regex.search(s)]
-            #print(index)
-            summary_length = len(index)
-            paragraphs = section_regex.split(dirty_object['text'])
-            clean_text = extract_text(paragraphs[0 if summary_length == 0 else index[0]+1])
-            #print(clean_text)
-            if clean_text != '':
-                result.append({
-                    'title': dirty_object['title'],
-                    'summary': clean_text
-                })
-                count += 1
-                if max_extract != 0 and count >= max_extract:
-                    break
+        if limit == 0:
+            for dirty_object in json_parser:
+                cleaned_summary = clean_object(dirty_object)
+                if cleaned_summary != '':
+                    result.append({
+                        'title': dirty_object['title'],
+                        'summary': cleaned_summary
+                    })
+        elif limit > 0:
+            count = 0
+            for dirty_object in json_parser:
+                cleaned_summary = clean_object(dirty_object)
+                if cleaned_summary != '':
+                    result.append({
+                        'title': dirty_object['title'],
+                        'summary': cleaned_summary
+                    })
+                    count += 1
+                    if count >= limit:
+                        break
+        else:
+            print('limit는 반드시 0 또는 양수가 지정되어야 합니다!')
+            raise TypeError('limit must be zero or positive.')
         return result, len(result)
 
 if __name__ == '__main__':
     parser = get_argparser()
     args = parser.parse_args()
 
-    result, count = extract_summary(args.dump_path, args.max_extract)
+    result, count = extract_summary(args.dump_path, args.limit)
     print('작업끝! 파일 쓰는중!', '추출된 문서 수 : ' + str(count))
 
     with open(args.output_file, 'w') as clean_json:

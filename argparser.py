@@ -10,6 +10,6 @@ def get_argparser():
                         default=inputfile_path)
     parser.add_argument('--output_file', type=str, required=False,
                         default= outputfile_path)
-    parser.add_argument('--max_extract', type=int, required=False,
+    parser.add_argument('--limit', type=int, required=False,
                         default=0)
     return parser
